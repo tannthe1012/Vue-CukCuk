@@ -1,0 +1,57 @@
+.grid {
+    width: calc(100% - 32px);
+    max-height: calc(78vh - 1px);
+    overflow: auto;
+    margin-left: 16px;
+}
+
+.gird-employee {
+    height: calc(100vh - 212px);
+}
+
+table th,
+td {
+    border-bottom: 1px solid #bbbbbb;
+    padding: 16px 16px;
+    text-align: left;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+table {
+    empty-cells: show;
+    empty-cells: inherit;
+    empty-cells: initial;
+    empty-cells: unset;
+}
+table tbody tr:nth-child(even) {
+    background-color: #e9ebee;
+}
+
+table tr:hover {
+    background-color: #2da77c !important;
+}
+
+::-webkit-scrollbar {
+    width: 5px;
+    height: 5px;
+}
+
+::-webkit-scrollbar-track {
+    margin-top: 46px;
+    background: #bbbbbb;
+}
+
+::-webkit-scrollbar-thumb {
+    background: #454545;
+}
+
+th {
+    position: sticky;
+    top: 0;
+    background: #ffffff;
+}
+
+.white-space {
+    white-space: nowrap;
+}
