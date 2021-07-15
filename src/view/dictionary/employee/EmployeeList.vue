@@ -1,0 +1,42 @@
+<template>
+  <div>
+    <TheMenu />
+    <TheHeader />
+    <TheContent
+      @showFormDetail="showForm"
+      @showDataFormDetail="showDataFormDetail"
+    />
+  </div>
+</template>
+
+
+
+
+
+<script>
+import TheHeader from "../../../components/layout/TheHeader.vue";
+import TheMenu from "../../../components/layout/TheMenu.vue";
+import TheContent from "../../../components/layout/TheContent.vue";
+export default {
+  name: "EmployeeList",
+  
+  components: {
+    TheHeader,
+    TheMenu,
+    TheContent,
+  },
+  methods: {
+    showForm: function () {
+      this.$emit("showFormDetail");
+    },
+    showDataFormDetail: function (employee) {
+      this.$emit("showDataFormDetail",employee);
+    },
+  },
+};
+</script>
+
+<style>
+@import "../../../css/common/main.css";
+@import "../../../css/page/employee.css";
+</style>

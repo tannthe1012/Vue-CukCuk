@@ -12,11 +12,14 @@
         </div>
     </div>
 </template>
-<style lang="css" scoped>
-    @import '../../css/common/header.css'
-</style>
 <script>
     export default ({
         name:"TheHeader"
     })
 </script>
+
+
+<style lang="css" scoped>
+    @import '../../css/common/header.css'
+</style>
+
