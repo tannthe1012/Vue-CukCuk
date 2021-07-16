@@ -24,7 +24,7 @@
                 </div>
                 <div class="nav-item-content">Mua Hàng</div>
             </a>
-            <a class="nav-item" href="employee.html" style="text-decoration: none;color: #000000;">
+            <a class="nav-item" href="employee.html" style="text-decoration: none;color: #000000; background-color: #019160;">
                 <div class="nav-item-icon icon-dic-employee" >
 
                 </div>

@@ -1,4 +1,5 @@
 .grid {
+    /* position: absolute; */
     width: calc(100% - 32px);
     max-height: calc(78vh - 1px);
     overflow: auto;
@@ -24,6 +25,7 @@ table {
     empty-cells: initial;
     empty-cells: unset;
 }
+
 table tbody tr:nth-child(even) {
     background-color: #e9ebee;
 }
@@ -38,7 +40,7 @@ table tr:hover {
 }
 
 ::-webkit-scrollbar-track {
-    margin-top: 46px;
+    margin-top: 48px;
     background: #bbbbbb;
 }
 

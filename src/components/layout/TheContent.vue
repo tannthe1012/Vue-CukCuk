@@ -8,7 +8,6 @@
           id="btn-add-employee"
           v-on:click="addEmployee"
         >
-          <!-- <button class="m-btn m-btn-default" id="btn-add-employee" > -->
           <div class="m-btn-icon icon-add"></div>
           <div class="btn-text">Thêm Nhân Viên</div>
         </button>
@@ -106,22 +105,37 @@
           </tr>
         </thead>
         <tbody>
-          <tr v-for="employee in employeeList" :key="employee.EmployeeId" @dblclick="showFormDetail(employee)">
+          <tr
+            v-for="employee in employeeList"
+            :key="employee.EmployeeId"
+            @dblclick="showFormDetail(employee)"
+            @contextmenu="openContextMenu($event,employee)"
+          >
+            <!-- @contextmenu="showContextMenu(event)" -->
             <td>{{ employee.EmployeeCode }}</td>
             <td>{{ employee.FullName }}</td>
             <td>{{ employee.GenderName }}</td>
-            <td>{{ employee.DateOfBirth }}</td>
+            <td class="text-align-center">
+              {{ format_date(employee.DateOfBirth) }}
+            </td>
             <td>{{ employee.IdentityNumber }}</td>
             <td class="white-space">{{ employee.Address }}</td>
             <td>{{ employee.PhoneNumber }}</td>
             <td>{{ employee.Email }}</td>
             <td>{{ employee.PositionName }}</td>
             <td>{{ employee.DepartmentName }}</td>
-            <td>{{ employee.Salary }}</td>
+            <td>{{ formatMoney(employee.Salary) }}</td>
             <td>{{ employee.WorkStatus }}</td>
           </tr>
         </tbody>
       </table>
+      <BaseContextMenu
+      v-show="viewMenu"
+      v-bind:style="{ top: top, left: left }"
+      @showPopupDelete="showPopupDelete"
+      @showDataFormDetail="showDataFormDetail"
+    />
+
     </div>
 
     <div class="paging-bar">
@@ -146,38 +160,69 @@
         <span style="font-weight: 1000">18</span> nhân viên/trang
       </div>
     </div>
+    
   </div>
 </template>
 <script>
+import BaseContextMenu from "../base/BaseContextMenu.vue";
+import moment from "moment";
 import axios from "axios";
 export default {
   name: "TheContent",
-
+  components: {
+    BaseContextMenu,
+  },
   data() {
     return {
+      employeeDetail: {},
       employeeList: [],
+      viewMenu: false,
+      top: "0px",
+      left: "0px",
     };
   },
-    methods: {
-        addEmployee : function() {
-            this.$emit('showFormDetail')
-        },
-        showFormDetail: function(employee) {
-          console.log(employee)
-          this.$emit('showDataFormDetail',employee)
-        }
+  methods: {
+    /**
+     * Hàm để show Form Thông tin nhân viên trống
+     * Created By: NTTan (15/7/2021)
+     */
+    addEmployee: function () {
+      this.$emit("showFormDetail");
     },
-  //   methods: {
-  //     formatDate(dt) {
-  //       if (dt == null) return "";
-  //       var f = function (d) {
-  //         return d < 10 ? "0" + d : d;
-  //       };
-  //       return (
-  //         f(dt.getDate()) + "/" + f(dt.getMonth() + 1) + "/" + dt.getFullYear()
-  //       );
-  //     },
-  //   },
+
+    showFormDetail: function (employee) {
+      console.log(employee);
+      this.$emit("showDataFormDetail", employee);
+    },
+    format_date(value) {
+      if (value) {
+        return moment(String(value)).format("DD/MM/YYYY");
+      }
+    },
+    formatMoney(money) {
+      if (money == null) return "0";
+      else return money.toLocaleString("it-IT");
+    },
+    /**
+     * Hàm để hiện cái context Menu
+     * Created By: NTTan (16/7/2021)
+     */
+    openContextMenu(e, employee) {
+      e.preventDefault();
+      this.viewMenu = true;
+      this.top = (e.clientY)  + 'px';
+      this.left = (e.clientX) +'px';
+      console.log(e.clientX);
+      console.log(e.clientY);
+      this.employeeDetail = employee
+    },
+    showDataFormDetail() {
+      this.viewMenu = false;
+      this.$emit("showDataFormDetail",this.employeeDetail);
+      this.employeeDetail = {};
+    }
+  },
+
   mounted: function () {
     axios
       .get("http://cukcuk.manhnv.net/v1/Employees")

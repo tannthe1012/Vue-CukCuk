@@ -18,12 +18,12 @@
                         <div class="form-row">
                             <div class="form-input">
                                 <label for="MaNV">Mã nhân viên(<span style="color: brown;">*</span>)</label><br>
-                                <input type="text" name="MaNV" value="" id="txtEmployeeCode" class="input-required" fieldname="EmployeeCode">
+                                <input type="text" name="MaNV" value="" v-model="EmployeeDetail.EmployeeCode" id="txtEmployeeCode" class="input-required" fieldname="EmployeeCode">
 
                             </div>
                             <div class="form-input">
                                 <label for="name">Họ và tên(<span style="color: brown;">*</span>)</label><br>
-                                <input type="text" value="" id="txtFullName" class="input-required" fieldname="FullName">
+                                <input type="text" value="" id="txtFullName" v-model="EmployeeDetail.FullName" class="input-required" fieldname="FullName">
 
                             </div>
 
@@ -31,7 +31,7 @@
                         <div class="form-row">
                             <div class="form-input">
                                 <label for="dateofbirth">Ngày sinh(<span style="color: brown;">*</span>)</label><br>
-                                <input type="date" name="dateofbirth" id="dtDateofBirth" value="" class="input-required" fieldname="DateOfBirth">
+                                <input type="date" name="dateofbirth" id="dtDateofBirth" value="" v-model="EmployeeDetail.DateOfBirth" class="input-required" fieldname="DateOfBirth">
 
                             </div>
                             <div class="form-input">
@@ -54,12 +54,12 @@
                         <div class="form-row">
                             <div class="form-input">
                                 <label for="personal-identity">Số CMTND/Căn cước(<span style="color: brown;">*</span>)</label><br>
-                                <input type="text" name="personal-identity" value="" class="input-required" id="txtIdentityNumber" fieldname="IdentityNumber">
+                                <input type="text" name="personal-identity" value="" v-model="EmployeeDetail.IdentityNumber" class="input-required" id="txtIdentityNumber" fieldname="IdentityNumber">
 
                             </div>
                             <div class="form-input">
                                 <label for="date-identity">Ngày cấp</label><br>
-                                <input type="date" name="date-identity" id="IdentityDate" value="" fieldname="IdentityDate"> 
+                                <input type="date" name="date-identity" id="IdentityDate"  value="" v-model="EmployeeDetail.IdentityDate" fieldname="IdentityDate"> 
 
                             </div>
 
@@ -67,7 +67,7 @@
                         <div class="form-row">
                             <div class="form-input">
                                 <label for="address-identity">Nơi cấp</label><br>
-                                <input type="text" name="address-identity" value="" id="IdentityPlace" fieldname="IdentityPlace">
+                                <input type="text" name="address-identity" value="" v-model="EmployeeDetail.IdentityPlace" id="IdentityPlace" fieldname="IdentityPlace">
 
                             </div>
 
@@ -76,12 +76,12 @@
                         <div class="form-row">
                             <div class="form-input">
                                 <label for="email">Email(<span style="color: brown;">*</span>)</label><br>
-                                <input type="email" name="email" value="" class="input-required" id="txtEmail" fieldname="Email">
+                                <input type="email" name="email" value="" class="input-required" v-model="EmployeeDetail.Email" id="txtEmail" fieldname="Email">
 
                             </div>
                             <div class="form-input">
                                 <label for="phonenumber">Số điện thoại(<span style="color: brown;">*</span>)</label><br>
-                                <input type="text" name="phonenumber" value="" class="input-required" id="txtPhoneNumber" fieldname="PhoneNumber">
+                                <input type="text" name="phonenumber" value="" class="input-required" v-model="EmployeeDetail.PhoneNumber" id="txtPhoneNumber" fieldname="PhoneNumber">
 
                             </div>
 
@@ -122,13 +122,13 @@
                         <div class="form-row">
                             <div class="form-input">
                                 <label for="tax-code">Mã số thuế cá nhân</label><br>
-                                <input type="text" name="tax-code" value="" id="txtPersonalTaxCode" fieldname="PersonalTaxCode">
+                                <input type="text" name="tax-code" value="" v-model="EmployeeDetail.PersonalTaxCode" id="txtPersonalTaxCode" fieldname="PersonalTaxCode">
 
                             </div>
                             <div class="form-input" id="form-salary">
                                 <div id="vnd" style="font-style: italic;opacity: 0.8;">(VNĐ)</div>
                                 <label for="salary">Mức lương cơ bản</label><br>
-                                <input type="text" id="salary" name="salary" value="" fieldname="Salary">
+                                <input type="text" id="salary" name="salary" value="" fieldname="Salary" v-model="EmployeeDetail.Salary">
 
                             </div>
 
@@ -162,7 +162,7 @@
             </div>
             <div class="form-button">
                 <div class="btn-close" id="employee-btn-close">Hủy</div>
-                <button class="m-btn m-btn-default" id="btn-save">
+                <button class="m-btn m-btn-default" id="btn-save" @click="addEmployee">
                     <div class="m-btn-icon icon-add"></div>
                     <div class="btn-text">Lưu</div>
                 </button>
@@ -173,17 +173,31 @@
 </template>
 
 <script>
+import axios from "axios";
+
     export default ({
         
         name:"EmployeeDetail",
         props: {
-            EmployeeDetail: Object
+            EmployeeDetail: {type:Object}
         },
         methods: {
             closeForm() {
+                console.log(this.EmployeeDetail);
                 this.$emit('closeForm');
+            },
+            addEmployee() {
+                axios.post('http://cukcuk.manhnv.net/v1/Employees',this.EmployeeDetail);
             }
         },
+        computed: {
+            inputVal: {
+                get() {
+
+                    return this.EmployeeDetail;
+                },
+            }
+        }
     })
 </script>
 

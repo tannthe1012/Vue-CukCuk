@@ -3,7 +3,7 @@
     border-radius: 5px;
     display: flex;
     position: absolute;
-    display: none;
+    /* display: none; */
     transform-origin: top left;
     animation: menuOpen 0.25s;
     z-index: 99999;
@@ -18,7 +18,8 @@
     }
 }
 
-#contextmenu-update, #contextmenu-delete {
+#contextmenu-update,
+#contextmenu-delete {
     text-align: center;
     height: 20px;
     width: 50px;
@@ -31,6 +32,7 @@
     color: #ffffff;
     background-color: #2FBE8E;
 }
+
 #contextmenu-delete:hover {
     color: #ffffff;
     background-color: #F65454;

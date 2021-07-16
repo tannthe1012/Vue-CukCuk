@@ -4,9 +4,7 @@
       @showFormDetail="showForm"
       @showDataFormDetail="showDataFormDetail"
     />
-    <EmployeeDetail v-show="isShow" @closeForm="closeFormDetail" v-bind:employeeDetail="employeeDetail"/>
-    <!-- <BasePopup/>
-        <BaseToast/> -->
+    <EmployeeDetail v-show="isShow" @closeForm="closeFormDetail" v-bind:EmployeeDetail="employeeDetail"/>
   </div>
 </template>
 <script>
@@ -19,18 +17,17 @@ export default {
   data() {
     return {
       isShow: false,
-      employeeDetail: Object,
+      employeeDetail: {},
     };
   },
   components: {
     EmployeeDetail,
     EmployeeList,
-    // BasePopup,
-    // BaseToast
   },
   methods: {
     showForm: function () {
       this.isShow = true;
+      this.employeeDetail = {};
     },
     closeFormDetail: function () {
       this.isShow = false;
@@ -38,7 +35,6 @@ export default {
     showDataFormDetail: function (employee) {
       this.isShow = true;
       this.employeeDetail = employee;
-      console.log(this.employeeDetail);
     },
   },
 };

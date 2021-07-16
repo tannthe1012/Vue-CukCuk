@@ -5,13 +5,10 @@
     <TheContent
       @showFormDetail="showForm"
       @showDataFormDetail="showDataFormDetail"
+      
     />
   </div>
 </template>
-
-
-
-
 
 <script>
 import TheHeader from "../../../components/layout/TheHeader.vue";
@@ -26,10 +23,10 @@ export default {
     TheContent,
   },
   methods: {
-    showForm: function () {
+    showForm() {
       this.$emit("showFormDetail");
     },
-    showDataFormDetail: function (employee) {
+    showDataFormDetail(employee) {
       this.$emit("showDataFormDetail",employee);
     },
   },
