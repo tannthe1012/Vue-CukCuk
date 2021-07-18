@@ -132,7 +132,6 @@
       <BaseContextMenu
       v-show="viewMenu"
       v-bind:style="{ top: top, left: left }"
-      @showPopupDelete="showPopupDelete"
       @showDataFormDetail="showDataFormDetail"
     />
 
@@ -160,10 +159,16 @@
         <span style="font-weight: 1000">18</span> nhân viên/trang
       </div>
     </div>
-    
+    <EmployeeDetail 
+    v-show="isShowFormDetail"
+    v-bind:EmployeeDetail="employeeDetail"
+    @closeForm="closeForm"
+    @saveOnClick="saveOnClick"
+    />
   </div>
 </template>
 <script>
+import EmployeeDetail from "../../view/dictionary/employee/EmployeeDetail.vue"
 import BaseContextMenu from "../base/BaseContextMenu.vue";
 import moment from "moment";
 import axios from "axios";
@@ -171,9 +176,12 @@ export default {
   name: "TheContent",
   components: {
     BaseContextMenu,
+    EmployeeDetail,
+    
   },
   data() {
     return {
+      isShowFormDetail: false, 
       employeeDetail: {},
       employeeList: [],
       viewMenu: false,
@@ -181,24 +189,57 @@ export default {
       left: "0px",
     };
   },
+  created() {
+    this.getAllEmployee();
+  },
   methods: {
+    async getAllEmployee() {
+      console.log("hello");
+      await axios
+      .get("http://cukcuk.manhnv.net/v1/Employees")
+      .then((response) => {
+        this.employeeList = response.data;
+        // console.log(formatDate(response.data.DateOfBirth));
+        console.log(response.data);
+        // console.log(this.employeeList);
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
+    },
+
+
+
     /**
      * Hàm để show Form Thông tin nhân viên trống
      * Created By: NTTan (15/7/2021)
      */
     addEmployee: function () {
-      this.$emit("showFormDetail");
+      this.employeeDetail = {};
+      this.isShowFormDetail = true;
     },
-
+    /**
+     * Hiển thị form Detail với sự kiện chọn DBlCLICK
+     * Created By: NTTan (15/7/2021)
+     */
     showFormDetail: function (employee) {
-      console.log(employee);
-      this.$emit("showDataFormDetail", employee);
+      this.employeeDetail = {...employee};
+      // console.log(this.employeeDetail);
+      this.isShowFormDetail = true;
     },
+    /**
+     * Hàm format date vào các tr tương ứng
+     * Created By: NTTan (15/7/2021)
+     */
     format_date(value) {
       if (value) {
         return moment(String(value)).format("DD/MM/YYYY");
       }
     },
+    /**
+     * Hàm format money để bind vào các thẻ tr tương ứng
+     * Created By: NTTan (15/7/2021)
+     */
     formatMoney(money) {
       if (money == null) return "0";
       else return money.toLocaleString("it-IT");
@@ -214,26 +255,37 @@ export default {
       this.left = (e.clientX) +'px';
       console.log(e.clientX);
       console.log(e.clientY);
-      this.employeeDetail = employee
+      this.employeeDetail = {...employee};
     },
+    /**
+     * Hàm xử lí sự kiện với nút X trong form
+     * Created By: NTTan  (16/7/2021)
+     */
+    closeForm() {
+      this.employeeDetail = {},
+      this.isShowFormDetail = false;
+    },
+    /**
+     * Hàm show form khi chọn nút Sửa trong context menu
+     * Created By:NTTan (16/7/2021)
+     */
     showDataFormDetail() {
-      this.viewMenu = false;
-      this.$emit("showDataFormDetail",this.employeeDetail);
-      this.employeeDetail = {};
+      this.isShowFormDetail = true;
+    },
+    async saveOnClick(employee) {
+      console.log(employee.EmployeeId);
+      if (employee.EmployeeId == undefined) {
+        await axios.post(`http://cukcuk.manhnv.net/v1/Employees`,employee);
+      } else {
+        await axios.put(`http://cukcuk.manhnv.net/v1/Employees/${employee.EmployeeId}`,employee);
+      }
+      this.isShowFormDetail = false;
+      this.getAllEmployee();
     }
+
   },
 
-  mounted: function () {
-    axios
-      .get("http://cukcuk.manhnv.net/v1/Employees")
-      .then((response) => {
-        this.employeeList = response.data;
-        // console.log(formatDate(response.data.DateOfBirth));
-      })
-      .catch(function (error) {
-        console.log(error);
-      });
-  },
+  
 };
 </script>
 

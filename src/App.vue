@@ -1,19 +1,33 @@
 <template>
   <div id="app">
-    <EmployeePage/>
+    <TheMenu />
+    <TheHeader />
+    <TheContent />
+    <!-- <EmployeeDetail /> -->
   </div>
 </template>
 
 <script>
-import EmployeePage from './view/dictionary/employee/EmployeePage.vue'
+// import EmployeeDetail from "./view/dictionary/employee/EmployeeDetail.vue"
+import TheMenu from "./components/layout/TheMenu.vue";
+import TheHeader from "./components/layout/TheHeader.vue";
+import TheContent from "./components/layout/TheContent.vue";
 export default {
-  name: 'App',
+  name: "App",
   components: {
-    EmployeePage
-  }
-}
+    TheMenu,
+    TheHeader,
+    TheContent,
+    // EmployeeDetail,
+  },
+};
 </script>
 
 <style>
-  @import './css/common/main.css';
+@import "./css/common/main.css";
+@import "./css/page/employee.css";
+#id {
+  position: relative;
+}
 </style>
+

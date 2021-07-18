@@ -7,6 +7,8 @@
     /* Sit on top */
     /* Location of the box */
     width: 100%;
+    top: 0;
+    left: 0;
     /* Full width */
     height: 100%;
     /* Full height */
@@ -17,6 +19,7 @@
     background-color: rgba(0, 0, 0, 0.4);
     /* Black w/ opacity */
 }
+
 .form-display {
     display: block;
 }
@@ -138,7 +141,6 @@
     border-color: #01B075;
 }
 
-
 label {
     margin-bottom: 8px;
 }
@@ -241,9 +243,12 @@ input.border-red {
     width: 100%;
     padding: 12px 0px;
 }
+
 .background-color-focus {
-    background-color: #09c969 ;
+    background-color: #09c969;
 }
+
+
 /* .border-red-combobox {
     border: 1px solid #FF4747 !important;
 } */

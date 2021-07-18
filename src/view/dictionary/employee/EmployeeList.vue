@@ -34,6 +34,5 @@ export default {
 </script>
 
 <style>
-@import "../../../css/common/main.css";
-@import "../../../css/page/employee.css";
+
 </style>
