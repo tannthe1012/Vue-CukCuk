@@ -14,10 +14,12 @@ body {
 }
 
 .modal-popup {
-    display: none;
+    /* display: block; */
     /* Hidden by default */
-    position: fixed;
+    position: absolute;
     /* Stay in place */
+    top: 0px;
+    left: 0px;
     z-index: 1;
     /* Sit on top */
     /* Location of the box */

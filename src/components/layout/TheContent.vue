@@ -133,6 +133,7 @@
       v-show="viewMenu"
       v-bind:style="{ top: top, left: left }"
       @showDataFormDetail="showDataFormDetail"
+      @showPopupDelete="showPopupDelete"
     />
 
     </div>
@@ -165,11 +166,15 @@
     @closeForm="closeForm"
     @saveOnClick="saveOnClick"
     />
+    <BasePopup 
+    v-show="isShowPopup"
+    v-bind:dataPopup="dataPopup"/>
   </div>
 </template>
 <script>
 import EmployeeDetail from "../../view/dictionary/employee/EmployeeDetail.vue"
 import BaseContextMenu from "../base/BaseContextMenu.vue";
+import BasePopup from "../base/BasePopup.vue";
 import moment from "moment";
 import axios from "axios";
 export default {
@@ -177,10 +182,16 @@ export default {
   components: {
     BaseContextMenu,
     EmployeeDetail,
-    
+    BasePopup
   },
   data() {
     return {
+      dataPopup: {
+        icon: `<i class="fas fa-exclamation-triangle"></i>`,
+        title: `Bạn có chắc muốn Xóa bản ghi trên hay không`,
+        buttonText: `Xoá`,
+      },
+      isShowPopup: true,
       isShowFormDetail: false, 
       employeeDetail: {},
       employeeList: [],
@@ -281,7 +292,14 @@ export default {
       }
       this.isShowFormDetail = false;
       this.getAllEmployee();
-    }
+    },
+    async showPopupDelete() {
+
+     await axios.delete(`http://cukcuk.manhnv.net/v1/Employees/${this.employeeDetail.EmployeeId}`);
+     this.getAllEmployee();
+     console.log(`http://cukcuk.manhnv.net/v1/Employees/${this.employeeDetail.EmployeeId}`);
+     this.viewMenu = false;
+    },
 
   },
 
