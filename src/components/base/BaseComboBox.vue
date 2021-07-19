@@ -2,9 +2,9 @@
     <div class="cbx">
         <div class="cbx-show">
             <input type="text">
-            <i class="fas fa-chevron-down cbx-icon-dropdown"></i>
+            <i class="fas fa-chevron-down cbx-icon-dropdown" @click="iconOnClick"></i>
         </div>
-        <div class="cbx-hide">
+        <div class="cbx-hide" v-show="isShowOption">
             <div value = "1" class="cbx-select"><i class="fas fa-check"></i>Phòng Nhân sự</div>
             <div value = "2" class="cbx-select"><i class="fas fa-check"></i>Phòng Đào tạo</div>
             <div value = "3" class="cbx-select"><i class="fas fa-check"></i>Phòng Nghiên cứu</div>
@@ -14,7 +14,17 @@
 </template>
 <script>
 export default {
-    name: "ComboBox"
+    name: "BaseComboBox",
+    data() {
+        return {
+            isShowOption: false,
+        }
+    },
+    methods: {
+        iconOnClick() {
+            this.isShowOption = true;
+        }
+    },
 }
 </script>
 <style scoped>

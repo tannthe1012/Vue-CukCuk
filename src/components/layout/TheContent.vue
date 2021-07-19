@@ -69,7 +69,7 @@
         </div>
       </div>
       <div class="filter-right">
-        <button class="m-btn-refresh m-second-button" id="btn-refresh"></button>
+        <button class="m-btn-refresh m-second-button" id="btn-refresh" @click="refreshData"></button>
       </div>
     </div>
     <div class="grid gird-employee">
@@ -104,12 +104,14 @@
             <th fieldname="WorkStatus">Tình trạng công việc</th>
           </tr>
         </thead>
-        <tbody>
+        
+        <tbody v-if="employeeList.length != 0">
+          
           <tr
             v-for="employee in employeeList"
             :key="employee.EmployeeId"
             @dblclick="showFormDetail(employee)"
-            @contextmenu="openContextMenu($event,employee)"
+            @contextmenu="openContextMenu($event, employee)"
           >
             <!-- @contextmenu="showContextMenu(event)" -->
             <td>{{ employee.EmployeeCode }}</td>
@@ -128,14 +130,14 @@
             <td>{{ employee.WorkStatus }}</td>
           </tr>
         </tbody>
+        <tbody v-else> Loading </tbody>
       </table>
       <BaseContextMenu
-      v-show="viewMenu"
-      v-bind:style="{ top: top, left: left }"
-      @showDataFormDetail="showDataFormDetail"
-      @showPopupDelete="showPopupDelete"
-    />
-
+        v-show="viewMenu"
+        v-bind:style="{ top: top, left: left }"
+        @showDataFormDetail="showDataFormDetail"
+        @showPopupDelete="showPopupDelete"
+      />
     </div>
 
     <div class="paging-bar">
@@ -160,19 +162,22 @@
         <span style="font-weight: 1000">18</span> nhân viên/trang
       </div>
     </div>
-    <EmployeeDetail 
-    v-show="isShowFormDetail"
-    v-bind:EmployeeDetail="employeeDetail"
-    @closeForm="closeForm"
-    @saveOnClick="saveOnClick"
+    <EmployeeDetail
+      v-show="isShowFormDetail"
+      v-bind:EmployeeDetail="employeeDetail"
+      @showPopupCloseForm="showPopupCloseForm"
+      @saveOnClick="saveOnClick"
     />
     <BasePopup 
-    v-show="isShowPopup"
-    v-bind:dataPopup="dataPopup"/>
+    v-show="isShowPopup" 
+    v-bind:dataPopup="dataPopup" 
+    @confirmPopup = "confirmPopup"
+    @closePopup = "closePopup"
+    />
   </div>
 </template>
 <script>
-import EmployeeDetail from "../../view/dictionary/employee/EmployeeDetail.vue"
+import EmployeeDetail from "../../view/dictionary/employee/EmployeeDetail.vue";
 import BaseContextMenu from "../base/BaseContextMenu.vue";
 import BasePopup from "../base/BasePopup.vue";
 import moment from "moment";
@@ -182,17 +187,18 @@ export default {
   components: {
     BaseContextMenu,
     EmployeeDetail,
-    BasePopup
+    BasePopup,
   },
   data() {
     return {
       dataPopup: {
-        icon: `<i class="fas fa-exclamation-triangle"></i>`,
-        title: `Bạn có chắc muốn Xóa bản ghi trên hay không`,
-        buttonText: `Xoá`,
+        icon: String,
+        title: String,
+        buttonText: String,
       },
-      isShowPopup: true,
-      isShowFormDetail: false, 
+      statusPopup: "",
+      isShowPopup: false,
+      isShowFormDetail: false,
       employeeDetail: {},
       employeeList: [],
       viewMenu: false,
@@ -204,22 +210,29 @@ export default {
     this.getAllEmployee();
   },
   methods: {
-    async getAllEmployee() {
-      console.log("hello");
-      await axios
-      .get("http://cukcuk.manhnv.net/v1/Employees")
-      .then((response) => {
-        this.employeeList = response.data;
-        // console.log(formatDate(response.data.DateOfBirth));
-        console.log(response.data);
-        // console.log(this.employeeList);
-      })
-      .catch(function (error) {
-        console.log(error);
-      });
+    initDataCombobox() {
+
     },
 
 
+
+    /**
+     * Hàm lấy dữ liệu của table
+     * Created By:  NTTan (15/7/2021)
+     */
+    async getAllEmployee() {
+      await axios
+        .get("http://cukcuk.manhnv.net/v1/Employees")
+        .then((response) => {
+          this.employeeList = response.data;
+          // console.log(formatDate(response.data.DateOfBirth));
+          console.log(response.data);
+          // console.log(this.employeeList);
+        })
+        .catch(function (error) {
+          console.log(error);
+        });
+    },
 
     /**
      * Hàm để show Form Thông tin nhân viên trống
@@ -234,7 +247,7 @@ export default {
      * Created By: NTTan (15/7/2021)
      */
     showFormDetail: function (employee) {
-      this.employeeDetail = {...employee};
+      this.employeeDetail = { ...employee };
       // console.log(this.employeeDetail);
       this.isShowFormDetail = true;
     },
@@ -262,20 +275,25 @@ export default {
     openContextMenu(e, employee) {
       e.preventDefault();
       this.viewMenu = true;
-      this.top = (e.clientY)  + 'px';
-      this.left = (e.clientX) +'px';
+      this.top = e.clientY + "px";
+      this.left = e.clientX + "px";
       console.log(e.clientX);
       console.log(e.clientY);
-      this.employeeDetail = {...employee};
+      this.employeeDetail = { ...employee };
     },
     /**
      * Hàm xử lí sự kiện với nút X trong form
      * Created By: NTTan  (16/7/2021)
      */
-    closeForm() {
-      this.employeeDetail = {},
-      this.isShowFormDetail = false;
+    showPopupCloseForm() {
+      this.statusPopup = "CLOSE";
+      this.dataPopup.icon = `<i class="fas fa-exclamation-triangle"></i>`,
+      this.dataPopup.title = `Bạn có chắc muốn Đóng Form trên hay không`;
+      this.dataPopup.buttonText = `Đóng`;
+      this.isShowPopup = true;
+      this.viewMenu = false;
     },
+    
     /**
      * Hàm show form khi chọn nút Sửa trong context menu
      * Created By:NTTan (16/7/2021)
@@ -283,27 +301,61 @@ export default {
     showDataFormDetail() {
       this.isShowFormDetail = true;
     },
+    /**
+     * Hàm xử lí sự kiện khi nhấn nút LƯU trong form
+     * Created By: NTT(17/7/2021)
+     */
     async saveOnClick(employee) {
       console.log(employee.EmployeeId);
       if (employee.EmployeeId == undefined) {
-        await axios.post(`http://cukcuk.manhnv.net/v1/Employees`,employee);
+        await axios.post(`http://cukcuk.manhnv.net/v1/Employees`, employee);
       } else {
-        await axios.put(`http://cukcuk.manhnv.net/v1/Employees/${employee.EmployeeId}`,employee);
+        await axios.put(
+          `http://cukcuk.manhnv.net/v1/Employees/${employee.EmployeeId}`,
+          employee
+        );
       }
       this.isShowFormDetail = false;
       this.getAllEmployee();
     },
-    async showPopupDelete() {
-
-     await axios.delete(`http://cukcuk.manhnv.net/v1/Employees/${this.employeeDetail.EmployeeId}`);
-     this.getAllEmployee();
-     console.log(`http://cukcuk.manhnv.net/v1/Employees/${this.employeeDetail.EmployeeId}`);
-     this.viewMenu = false;
+    /**
+     * Hiện popup delete
+     * Created By: NTTan (19/7/2021)
+     */
+    showPopupDelete() {
+      this.statusPopup = "DELETE";
+      this.dataPopup.icon = `<i class="fas fa-exclamation-triangle"></i>`,
+      this.dataPopup.title = `Bạn có chắc muốn Xóa bản ghi trên hay không`;
+      this.dataPopup.buttonText = `Xoá`;
+      this.isShowPopup = true;
+      this.viewMenu = false;
     },
-
+    /**
+     * Hàm xử lí confirm Delete
+     * Created By: NTTan (19/7/2021)
+     */
+    async confirmPopup() {
+      if (this.statusPopup == "DELETE") {
+         await axios.delete(
+        `http://cukcuk.manhnv.net/v1/Employees/${this.employeeDetail.EmployeeId}`
+      );
+      this.employeeDetail = {};
+      setTimeout(()=>{this.getAllEmployee()},2000);
+      this.isShowPopup = false;
+      } else {
+        this.isShowPopup = false;
+        (this.employeeDetail = {}), (this.isShowFormDetail = false);
+      }
+    },
+    closePopup() {
+      this.isShowPopup = false; 
+    },
+    refreshData() {
+      this.employeeList = [];
+      setTimeout(()=>{this.getAllEmployee()},2000);
+      // this.getAllEmployee();
+    }
   },
-
-  
 };
 </script>
 

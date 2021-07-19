@@ -2,7 +2,7 @@
   <div id="modal" class="modal">
     <!-- <p>{{showProps()}}</p> -->
     <div class="form-employee">
-      <div class="close" id="btn-x-close" @click="closeForm"></div>
+      <div class="close" id="btn-x-close" @click="showPopupCloseForm"></div>
       <div class="header-form">THÔNG TIN NHÂN VIÊN</div>
       <div class="form-main">
         <div class="avatar">
@@ -174,17 +174,7 @@
               </div>
               <div class="form-input">
                 <label for="department">Phòng ban</label><br />
-                <div class="cbx">
-                  <div class="cbx-show">
-                    <input type="text" />
-                    <i class="fas fa-chevron-down cbx-icon-dropdown"></i>
-                  </div>
-                  <div
-                    class="cbx-hide"
-                    fieldname="DepartmentName"
-                    api="/api/Department"
-                  ></div>
-                </div>
+                <BaseComboBox/>
               </div>
             </div>
             <div class="form-row">
@@ -254,7 +244,7 @@
         </div>
       </div>
       <div class="form-button">
-        <div class="btn-close" id="employee-btn-close">Hủy</div>
+        <div class="btn-close" id="employee-btn-close" @click="showPopupCloseForm">Hủy</div>
         <button
           class="m-btn m-btn-default"
           id="btn-save"
@@ -269,15 +259,12 @@
 </template>
 
 <script>
-// import axios from "axios";
-
+import BaseComboBox from '../../../components/base/BaseComboBox.vue'
 export default {
   name: "EmployeeDetail",
-  // data() {
-  //     return {
-
-  //     }
-  // },
+  components: {
+    BaseComboBox,
+  },
   props: {
     EmployeeDetail: { type: Object },
   },
@@ -286,19 +273,15 @@ export default {
      * Hàm xử lí đóng form Gửi lên EmployeeDetail
      * Created By: NTTan(16/7/2021)
      */
-    closeForm() {
-      this.$emit("closeForm");
+    showPopupCloseForm() {
+      this.$emit("showPopupCloseForm");
     },
     /**
      * Hàm thêm nhân viên
      * Created By: NTTan(16/7/2021)
      */
     btnSaveOnClick() {
-      console.log("da vao toi day");
-      // console.log(this.EmployeeDetail.EmployeeId);
-      // var employee = this.EmployeeDetail;
       this.$emit("saveOnClick", this.EmployeeDetail);
-      // axios.post('http://cukcuk.manhnv.net/v1/Employees',this.EmployeeDetail);
     },
   },
   
