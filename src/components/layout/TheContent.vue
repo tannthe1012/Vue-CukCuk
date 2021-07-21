@@ -22,54 +22,18 @@
           style="padding-left: 40px; width: 250px"
         />
         <div class="dropdown">
-          <div class="dropdown-show">
-            <span>Tất cả phòng ban</span>
-            <i
-              class="fas fa-chevron-down dropdown-icon"
-              style="transform: none"
-            ></i>
-          </div>
-          <div class="dropdown-hide" style="display: none">
-            <div class="dropdown-select">
-              <i class="fas fa-check"></i>Phòng Nhân sự
-            </div>
-            <div class="dropdown-select">
-              <i class="fas fa-check"></i>Phòng Đào tạo
-            </div>
-            <div class="dropdown-select">
-              <i class="fas fa-check"></i>Phòng Nghiên cứu
-            </div>
-            <div class="dropdown-select">
-              <i class="fas fa-check"></i>Phòng Phát triển
-            </div>
-          </div>
+          <BaseComboBox v-bind:item="department" />
         </div>
         <div class="dropdown">
-          <div class="dropdown-show">
-            <span>Tất cả phòng ban</span>
-            <i
-              class="fas fa-chevron-down dropdown-icon"
-              style="transform: none"
-            ></i>
-          </div>
-          <div class="dropdown-hide" style="display: none">
-            <div class="dropdown-select">
-              <i class="fas fa-check"></i>Phòng Nhân sự
-            </div>
-            <div class="dropdown-select">
-              <i class="fas fa-check"></i>Phòng Đào tạo
-            </div>
-            <div class="dropdown-select">
-              <i class="fas fa-check"></i>Phòng Nghiên cứu
-            </div>
-            <div class="dropdown-select">
-              <i class="fas fa-check"></i>Phòng Phát triển
-            </div>
-          </div>
+          <BaseComboBox v-bind:item="position" />
         </div>
       </div>
       <div class="filter-right">
-        <button class="m-btn-refresh m-second-button" id="btn-refresh" @click="refreshData"></button>
+        <button
+          class="m-btn-refresh m-second-button"
+          id="btn-refresh"
+          @click="refreshData"
+        ></button>
       </div>
     </div>
     <div class="grid gird-employee">
@@ -104,9 +68,8 @@
             <th fieldname="WorkStatus">Tình trạng công việc</th>
           </tr>
         </thead>
-        
+
         <tbody v-if="employeeList.length != 0">
-          
           <tr
             v-for="employee in employeeList"
             :key="employee.EmployeeId"
@@ -130,7 +93,13 @@
             <td>{{ employee.WorkStatus }}</td>
           </tr>
         </tbody>
-        <tbody v-else> Loading </tbody>
+        <tbody v-else>
+          <div class="loading">
+            <div class="uil-ring-css" style="transform: scale(0.79)">
+              <div></div>
+            </div>
+          </div>
+        </tbody>
       </table>
       <BaseContextMenu
         v-show="viewMenu"
@@ -163,22 +132,25 @@
       </div>
     </div>
     <EmployeeDetail
-      v-show="isShowFormDetail"
+      v-if="isShowFormDetail"
       v-bind:EmployeeDetail="employeeDetail"
+      v-bind:department="department"
+      v-bind:position="position"
       @showPopupCloseForm="showPopupCloseForm"
       @saveOnClick="saveOnClick"
     />
-    <BasePopup 
-    v-show="isShowPopup" 
-    v-bind:dataPopup="dataPopup" 
-    @confirmPopup = "confirmPopup"
-    @closePopup = "closePopup"
+    <BasePopup
+      v-show="isShowPopup"
+      v-bind:dataPopup="dataPopup"
+      @confirmPopup="confirmPopup"
+      @closePopup="closePopup"
     />
   </div>
 </template>
 <script>
 import EmployeeDetail from "../../view/dictionary/employee/EmployeeDetail.vue";
 import BaseContextMenu from "../base/BaseContextMenu.vue";
+import BaseComboBox from "../base/BaseComboBox.vue";
 import BasePopup from "../base/BasePopup.vue";
 import moment from "moment";
 import axios from "axios";
@@ -188,6 +160,7 @@ export default {
     BaseContextMenu,
     EmployeeDetail,
     BasePopup,
+    BaseComboBox,
   },
   data() {
     return {
@@ -201,21 +174,34 @@ export default {
       isShowFormDetail: false,
       employeeDetail: {},
       employeeList: [],
+      department: [],
+      position: [],
       viewMenu: false,
       top: "0px",
       left: "0px",
+      style: `
+        .cbx {
+          margin-top: 0px;
+        }
+      `,
+      // placeholder: {
+      //   position: "Tất cả vị trí",
+      //   department: "Tất cả phòng ban",
+      // }
     };
+  },
+  mounted() {
+    document.addEventListener("click", this.handleClickOutside);
+  },
+  destroyed() {
+    document.removeEventListener("click", this.handleClickOutside);
   },
   created() {
     this.getAllEmployee();
+    this.getDepartment();
+    this.getPosition();
   },
   methods: {
-    initDataCombobox() {
-
-    },
-
-
-
     /**
      * Hàm lấy dữ liệu của table
      * Created By:  NTTan (15/7/2021)
@@ -225,9 +211,45 @@ export default {
         .get("http://cukcuk.manhnv.net/v1/Employees")
         .then((response) => {
           this.employeeList = response.data;
-          // console.log(formatDate(response.data.DateOfBirth));
-          console.log(response.data);
-          // console.log(this.employeeList);
+          // console.log(response.data);
+        })
+        .catch(function (error) {
+          console.log(error);
+        });
+    },
+    /**
+     * Hàm lấy dữ liệu của table
+     * Created By:  NTTan (15/7/2021)
+     */
+    async getPosition() {
+      await axios
+        .get("http://cukcuk.manhnv.net/v1/Positions")
+        .then((response) => {
+          response.data.forEach((element) => {
+            this.position.push({
+              id: element.PositionId,
+              name: element.PositionName,
+            });
+          });
+        })
+        .catch(function (error) {
+          console.log(error);
+        });
+    },
+    /**
+     * Hàm lấy dữ liệu của table
+     * Created By:  NTTan (15/7/2021)
+     */
+    async getDepartment() {
+      await axios
+        .get("http://cukcuk.manhnv.net/api/Department")
+        .then((response) => {
+          response.data.forEach((element) => {
+            this.department.push({
+              id: element.DepartmentId,
+              name: element.DepartmentName,
+            });
+          });
         })
         .catch(function (error) {
           console.log(error);
@@ -239,7 +261,7 @@ export default {
      * Created By: NTTan (15/7/2021)
      */
     addEmployee: function () {
-      this.employeeDetail = {};
+      this.employeeDetail = {PositionName: "",DepartmentName: ""};
       this.isShowFormDetail = true;
     },
     /**
@@ -287,13 +309,13 @@ export default {
      */
     showPopupCloseForm() {
       this.statusPopup = "CLOSE";
-      this.dataPopup.icon = `<i class="fas fa-exclamation-triangle"></i>`,
+      this.dataPopup.icon = `<i class="fas fa-exclamation-triangle"></i>`;
       this.dataPopup.title = `Bạn có chắc muốn Đóng Form trên hay không`;
       this.dataPopup.buttonText = `Đóng`;
       this.isShowPopup = true;
       this.viewMenu = false;
     },
-    
+
     /**
      * Hàm show form khi chọn nút Sửa trong context menu
      * Created By:NTTan (16/7/2021)
@@ -324,7 +346,7 @@ export default {
      */
     showPopupDelete() {
       this.statusPopup = "DELETE";
-      this.dataPopup.icon = `<i class="fas fa-exclamation-triangle"></i>`,
+      this.dataPopup.icon = `<i class="fas fa-exclamation-triangle"></i>`;
       this.dataPopup.title = `Bạn có chắc muốn Xóa bản ghi trên hay không`;
       this.dataPopup.buttonText = `Xoá`;
       this.isShowPopup = true;
@@ -336,29 +358,42 @@ export default {
      */
     async confirmPopup() {
       if (this.statusPopup == "DELETE") {
-         await axios.delete(
-        `http://cukcuk.manhnv.net/v1/Employees/${this.employeeDetail.EmployeeId}`
-      );
-      this.employeeDetail = {};
-      setTimeout(()=>{this.getAllEmployee()},2000);
-      this.isShowPopup = false;
+        await axios.delete(
+          `http://cukcuk.manhnv.net/v1/Employees/${this.employeeDetail.EmployeeId}`
+        );
+        this.employeeDetail = {};
+        setTimeout(() => {
+          this.getAllEmployee();
+        }, 2000);
+        this.isShowPopup = false;
       } else {
         this.isShowPopup = false;
         (this.employeeDetail = {}), (this.isShowFormDetail = false);
       }
     },
     closePopup() {
-      this.isShowPopup = false; 
+      this.isShowPopup = false;
     },
     refreshData() {
       this.employeeList = [];
-      setTimeout(()=>{this.getAllEmployee()},2000);
+      setTimeout(() => {
+        this.getAllEmployee();
+      }, 2000);
       // this.getAllEmployee();
-    }
+    },
+    handleClickOutside(event) {
+      if (!this.$el.contains(event.target)) {
+        this.viewMenu = false;
+      }
+    },
   },
 };
 </script>
 
 <style lang="css" scoped>
 @import "../../css/common/content.css";
+@import "../../css/common/loading.css";
+BaseComboBox {
+  margin-top: 0px;
+}
 </style>

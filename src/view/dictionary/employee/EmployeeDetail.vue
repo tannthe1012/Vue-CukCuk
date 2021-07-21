@@ -160,21 +160,11 @@
             <div class="form-row">
               <div class="form-input">
                 <label for="position">Vị trí</label><br />
-                <div class="cbx" id="Position">
-                  <div class="cbx-show">
-                    <input type="text" />
-                    <i class="fas fa-chevron-down cbx-icon-dropdown"></i>
-                  </div>
-                  <div
-                    class="cbx-hide"
-                    fieldname="PositionName"
-                    api="/v1/Positions"
-                  ></div>
-                </div>
+                <BaseComboBox v-bind:item="position" v-bind:valueInput="EmployeeDetail.PositionName"/> 
               </div>
               <div class="form-input">
                 <label for="department">Phòng ban</label><br />
-                <BaseComboBox/>
+                <BaseComboBox v-bind:item="department" v-bind:valueInput="EmployeeDetail.DepartmentName"/>
               </div>
             </div>
             <div class="form-row">
@@ -267,6 +257,15 @@ export default {
   },
   props: {
     EmployeeDetail: { type: Object },
+    department: {type: Array},
+    position: {type: Array},
+    gender: [
+      {id: 0, name : "Nữ"},
+      {id: 1, name : "Nam"},
+      {id: 2, name : "Không Xác Định"},
+      {id: 3, name : "Không Xác Định"},
+      {id: 4, name : "Không Xác Định"},
+    ]
   },
   methods: {
     /**

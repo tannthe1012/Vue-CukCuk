@@ -50,6 +50,7 @@
     font-size: 16px;
     margin-right: 10px;
     opacity: 0;
+    color: #ffffff;
 }
 
 .cbx-select:hover {
@@ -99,4 +100,10 @@
 
 .border-red-combobox {
     border-color: red;
+}
+.active-icon {
+    opacity: 1 !important;
+}
+.cbx-show:focus-within {
+    border-color: #019160 !important;
 }

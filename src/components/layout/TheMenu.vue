@@ -25,10 +25,10 @@
                 <div class="nav-item-content">Mua Hàng</div>
             </a>
             <a class="nav-item" href="employee.html" style="text-decoration: none;color: #000000; background-color: #019160;">
-                <div class="nav-item-icon icon-dic-employee" >
+                <div class="nav-item-icon icon-dic-employee" style="filter: brightness(0) invert(1);">
 
                 </div>
-                <div class="nav-item-content">Danh Mục Nhân Viên</div>
+                <div class="nav-item-content" style="color: #ffffff">Danh Mục Nhân Viên</div>
             </a>
             <a class="nav-item" href="customer.html" style="text-decoration: none;color: #000000;">
                 <div class="nav-item-icon icon-dic-employee" >

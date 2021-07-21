@@ -16,8 +16,8 @@
 }
 
 .filter-bar .filter-left .dropdown {
-    margin-left: 8px;
-    margin-right: 20px;
+    margin-left: 20px;
+    margin-right: 8px;
 }
 
 .content .header-content {
@@ -135,4 +135,14 @@
 .context-delete-employee:hover {
     background-color: rgb(214, 69, 12);
     color: #ffffff;
+}
+.dropdown input {
+    padding: 0px;
+}
+.dropdown .cbx {
+    margin-top: 0px;
+    /* height: 40px; */
+}
+.dropdown .cbx .cbx-show {
+    height: 36px;
 }
