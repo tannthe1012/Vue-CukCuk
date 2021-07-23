@@ -30,7 +30,7 @@
     margin: auto;
     margin-top: 30px;
     border: 1px solid #888;
-    width: 40%;
+    width: 45%;
 }
 
 .modal .form-employee .close {
@@ -125,6 +125,7 @@
 }
 
 .form-input input {
+    
     box-sizing: border-box;
     width: 100%;
     margin-bottom: 16px;
@@ -134,7 +135,7 @@
     border-radius: 4px;
     font-size: inherit;
     font-family: inherit;
-    /* margin-top: 4px; */
+    margin-top: 4px;
 }
 
 .form-input input:focus {
@@ -204,7 +205,7 @@ label {
     background-color: #E5E5E5;
 }
 
-input.border-red {
+input.error-input {
     border: 1px solid #FF4747;
 }
 
@@ -247,8 +248,3 @@ input.border-red {
 .background-color-focus {
     background-color: #09c969;
 }
-
-
-/* .border-red-combobox {
-    border: 1px solid #FF4747 !important;
-} */

@@ -138,6 +138,8 @@
 }
 .dropdown input {
     padding: 0px;
+    padding-left: 10px;
+    padding-top: 3px;
 }
 .dropdown .cbx {
     margin-top: 0px;

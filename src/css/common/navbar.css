@@ -73,8 +73,15 @@
     
 }
 
-.navbar .navbar-content .nav-item .nav-item-content {}
-
-.nav-item-active {
+.nav-item-content {
+    color: #000000;
+  }
+  .menu-active {
     background-color: #019160 !important;
-}
+  }
+  .content-active {
+    color: #ffffff;
+  }
+  .icon-menu-active {
+    filter: brightness(0) invert(1);
+  }

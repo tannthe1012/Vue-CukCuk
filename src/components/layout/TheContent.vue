@@ -22,10 +22,18 @@
           style="padding-left: 40px; width: 250px"
         />
         <div class="dropdown">
-          <BaseComboBox v-bind:item="department" />
+          <BaseComboBox
+            v-bind:item="department"
+            v-bind:valueInput="optionAll[0].name"
+            v-bind:optionAll="optionAll[0]"
+          />
         </div>
         <div class="dropdown">
-          <BaseComboBox v-bind:item="position" />
+          <BaseComboBox
+            v-bind:item="position"
+            v-bind:valueInput="optionAll[1].name"
+            v-bind:optionAll="optionAll[1]"
+          />
         </div>
       </div>
       <div class="filter-right">
@@ -54,18 +62,18 @@
         </colgroup>
         <thead>
           <tr>
-            <th fieldname="EmployeeCode">Mã nhân viên</th>
-            <th fieldname="FullName">Họ và tên</th>
-            <th fieldname="GenderName">Giới tính</th>
-            <th fieldname="DateOfBirth" class="text-align-center">Ngày sinh</th>
-            <th fieldname="IdentityNumber">Số CMTND/Căn cước</th>
-            <th fieldname="Address">Địa chỉ</th>
-            <th fieldname="PhoneNumber">Điện thoại</th>
-            <th fieldname="Email">Email</th>
-            <th fieldname="PositionName">Chức vụ</th>
-            <th fieldname="DepartmentName">Phòng ban</th>
-            <th fieldname="Salary">Mức lương cơ bản</th>
-            <th fieldname="WorkStatus">Tình trạng công việc</th>
+            <th>Mã nhân viên</th>
+            <th>Họ và tên</th>
+            <th>Giới tính</th>
+            <th class="text-align-center">Ngày sinh</th>
+            <th>Số CMTND/Căn cước</th>
+            <th>Địa chỉ</th>
+            <th>Điện thoại</th>
+            <th>Email</th>
+            <th>Chức vụ</th>
+            <th>Phòng ban</th>
+            <th style="text-align: right">Mức lương cơ bản</th>
+            <th>Tình trạng công việc</th>
           </tr>
         </thead>
 
@@ -76,7 +84,6 @@
             @dblclick="showFormDetail(employee)"
             @contextmenu="openContextMenu($event, employee)"
           >
-            <!-- @contextmenu="showContextMenu(event)" -->
             <td>{{ employee.EmployeeCode }}</td>
             <td>{{ employee.FullName }}</td>
             <td>{{ employee.GenderName }}</td>
@@ -89,7 +96,7 @@
             <td>{{ employee.Email }}</td>
             <td>{{ employee.PositionName }}</td>
             <td>{{ employee.DepartmentName }}</td>
-            <td>{{ formatMoney(employee.Salary) }}</td>
+            <td style="text-align: right">{{ formatMoney(employee.Salary) }}</td>
             <td>{{ employee.WorkStatus }}</td>
           </tr>
         </tbody>
@@ -145,22 +152,32 @@
       @confirmPopup="confirmPopup"
       @closePopup="closePopup"
     />
+    <div id="toast">
+    <!-- <BaseToast v-for="toast in this.$store.state.Toast" :key="toast.id"/> -->
+    <BaseToast v-for="toast in this.$store.state.Toast" :key="toast.id" v-bind:toast="toast"/>
+    </div>
   </div>
 </template>
+
 <script>
 import EmployeeDetail from "../../view/dictionary/employee/EmployeeDetail.vue";
 import BaseContextMenu from "../base/BaseContextMenu.vue";
 import BaseComboBox from "../base/BaseComboBox.vue";
 import BasePopup from "../base/BasePopup.vue";
+import BaseToast from "../base/BaseToast.vue";
 import moment from "moment";
 import axios from "axios";
+import {toast} from "../../mixins/mixin.js"
+
 export default {
   name: "TheContent",
+  mixins: [toast],
   components: {
     BaseContextMenu,
     EmployeeDetail,
     BasePopup,
     BaseComboBox,
+    BaseToast,
   },
   data() {
     return {
@@ -169,6 +186,11 @@ export default {
         title: String,
         buttonText: String,
       },
+      optionAll: [
+        { id: "0", name: "Tất cả vị trí" },
+        { id: "0", name: "Tất cả phòng ban" },
+      ],
+      valueCbx: "",
       statusPopup: "",
       isShowPopup: false,
       isShowFormDetail: false,
@@ -179,15 +201,6 @@ export default {
       viewMenu: false,
       top: "0px",
       left: "0px",
-      style: `
-        .cbx {
-          margin-top: 0px;
-        }
-      `,
-      // placeholder: {
-      //   position: "Tất cả vị trí",
-      //   department: "Tất cả phòng ban",
-      // }
     };
   },
   mounted() {
@@ -261,7 +274,7 @@ export default {
      * Created By: NTTan (15/7/2021)
      */
     addEmployee: function () {
-      this.employeeDetail = {PositionName: "",DepartmentName: ""};
+      this.employeeDetail = { PositionName: "", DepartmentName: "" };
       this.isShowFormDetail = true;
     },
     /**
@@ -328,7 +341,6 @@ export default {
      * Created By: NTT(17/7/2021)
      */
     async saveOnClick(employee) {
-      console.log(employee.EmployeeId);
       if (employee.EmployeeId == undefined) {
         await axios.post(`http://cukcuk.manhnv.net/v1/Employees`, employee);
       } else {
@@ -362,29 +374,42 @@ export default {
           `http://cukcuk.manhnv.net/v1/Employees/${this.employeeDetail.EmployeeId}`
         );
         this.employeeDetail = {};
+        this.addToast("success","Bạn đã xóa bản ghi thành công");
         setTimeout(() => {
+          this.employeeList = [];
           this.getAllEmployee();
-        }, 2000);
+        }, 3000);        
+        this.isShowToast = true;
         this.isShowPopup = false;
       } else {
         this.isShowPopup = false;
         (this.employeeDetail = {}), (this.isShowFormDetail = false);
+        this.addToast("success","Bạn đã đóng Form thành công");
       }
     },
+    /**
+    Hàm xử lí sự kiện đóng popup
+    Created By: NTTan (19/7/2021)
+     */
     closePopup() {
       this.isShowPopup = false;
     },
+    /**
+     *  Hàm xử lý refresh Data Api
+     * Created By: NTTan (19/7/2021)
+    */
     refreshData() {
       this.employeeList = [];
       setTimeout(() => {
         this.getAllEmployee();
       }, 2000);
-      // this.getAllEmployee();
     },
-    handleClickOutside(event) {
-      if (!this.$el.contains(event.target)) {
-        this.viewMenu = false;
-      }
+    /**
+     * Hàm xử lý click ra ngoài sẽ đóng context menu
+     * Created By: NTTan (20/7/2021)
+     */
+    handleClickOutside() {
+      this.viewMenu = false;
     },
   },
 };
@@ -393,7 +418,5 @@ export default {
 <style lang="css" scoped>
 @import "../../css/common/content.css";
 @import "../../css/common/loading.css";
-BaseComboBox {
-  margin-top: 0px;
-}
+@import "../../css/common/toast.css";
 </style>

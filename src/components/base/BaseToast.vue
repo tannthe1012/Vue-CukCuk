@@ -1,13 +1,32 @@
 <template>
-    <div>
-
+    <div class="toast" :class="toast.classtoast">
+      <div class="toast-icon">
+        <i :class="toast.icontoast"></i>
+      </div>
+      <div class="toast-text">{{toast.message}}</div>
+      <div class="toast-icon toast-close">
+        <i class="fas fa-times"></i>
+      </div>
     </div>
 </template>
 <script>
 export default {
     name: "BaseToast",
+    props: {
+        toast:Object,
+    },
+    mounted() {
+      setTimeout(() => {
+        this.removeArrayToast();
+      },3000); 
+    },
+    methods: {
+      removeArrayToast() {
+        this.$store.state.Toast = this.$store.state.Toast.filter((item) => item.id != this.toast.id);
+      }
+    }
 }
 </script>
 <style scoped>
-    @import '../../css/common/toast.css'
+@import "../../css/common/toast.css";
 </style>

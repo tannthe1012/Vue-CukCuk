@@ -30,6 +30,7 @@
     padding-left: 10px;
     border: none;
     font-family: GoogleSans-Regular;
+    margin-top: 0px !important;
 }
 
 .cbx-show input:focus-visible {
@@ -106,4 +107,7 @@
 }
 .cbx-show:focus-within {
     border-color: #019160 !important;
+}
+.error-combobox {
+    border-color: red !important;
 }

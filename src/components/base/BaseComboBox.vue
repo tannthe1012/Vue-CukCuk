@@ -1,15 +1,16 @@
 <template>
   <div class="cbx">
-    <div class="cbx-show">
+    <div class="cbx-show" :class="{ 'error-combobox': error == true }">
       <input
+        :title="errorMessage"
         type="text"
-       
+        @blur="validateCombobox(inputValue)"
         @input="onChange"
         @keydown.down="onArrowDown"
         @keydown.up="onArrowUp"
         @keydown.enter="onEnter"
-         v-model="valueInput"
-        ref="input"
+        v-model="inputValue"
+        ref="refinput"
       />
       <i class="fas fa-chevron-down cbx-icon-dropdown" @click="iconOnClick"></i>
     </div>
@@ -23,9 +24,12 @@
           active: item.name == valueSelect,
           'cbx-select-focus': index == arrowCounter,
         }"
-        @click="select(item, index)"
+        @click="select(item)"
       >
-        <i class="fas fa-check" :class="{'active-icon': item.name == valueSelect}"></i
+        <i
+          class="fas fa-check"
+          :class="{ 'active-icon': item.name == valueSelect }"
+        ></i
         >{{ item.name }}
       </div>
     </div>
@@ -36,19 +40,33 @@ export default {
   name: "BaseComboBox",
   data() {
     return {
+      error: false,
+      errorMessage: "",
       isShowOption: false,
-      // valueInput: "",
       valueSelect: this.valueInput,
-      selectedIndex: -1,
+      inputValue: this.valueInput,
       results: [],
       arrowCounter: -1,
+      items: [...this.item, { ...this.optionAll }],
     };
   },
 
   props: {
+    required: {
+      type: Boolean,
+      default: false,
+    },
     item: Array,
-    // placeholder: String
-    valueInput: {type:String},
+    valueInput: { type: String },
+    optionAll: { type: Object },
+  },
+  watch: {
+    item: function () {
+      this.items = [...this.item, { ...this.optionAll }];
+    },
+    valueSelect: function () {
+      this.$emit("result", this.valueSelect);
+    },
   },
   /**
    * xử lí sự kiện click ra ngoài sẽ ẩn combobox
@@ -61,12 +79,6 @@ export default {
   destroyed() {
     document.removeEventListener("click", this.handleClickOutside);
   },
-  created: function () {
-    console.log("toi day");
-    this.results = { ...this.item};
-    // this.valueInput = this.default;
-
-  },
   methods: {
     /**
      * xử lí sự kiện click vào icon sẽ show ra các option
@@ -76,19 +88,17 @@ export default {
       this.filterResult();
       this.arrowCounter = -1;
       this.isShowOption = !this.isShowOption;
-      if (this.isShowOption == true) this.$refs.input.focus();
+      if (this.isShowOption == true) this.$refs.refinput.focus();
     },
     /**
      * xử lí sự kiện click vào các option
      * created By: NTTan (19/7/2021)
      */
-    select: function (item, index) {
-      // this.valueInput = "tôi là tấn";
-      console.log(item.name);
+    select: function (item) {
       this.isShowOption = false;
-      this.valueInput = `${item.name}`;
-      this.valueSelect = this.valueInput;
-      this.selectedIndex = index;
+      this.inputValue = `${item.name}`;
+      this.valueSelect = this.inputValue;
+      this.$refs.refinput.focus()
     },
     /**
      * Gán class active vào option được chọn
@@ -104,13 +114,12 @@ export default {
      * created By: NTTan (19/7/2021)
      */
     filterResult() {
-
-      this.results = this.item.filter((item) =>
-        item.name
-          .toLowerCase()
-          .includes(this.valueInput.toLowerCase())
+      if (this.optionAll === undefined) {
+        this.items = [...this.item];
+      }
+      this.results = this.items.filter((item) =>
+        item.name.toLowerCase().includes(this.inputValue.toLowerCase())
       );
-
     },
     /**
      * lắng nghê sự thay đổi của input
@@ -161,11 +170,31 @@ export default {
      * created By: NTTan (19/7/2021)
      */
     onEnter() {
-      this.valueInput = this.results[this.arrowCounter].name;
-      this.valueSelect = this.valueInput;
-      this.selectedIndex = this.arrowCounter;
+      this.inputValue = this.results[this.arrowCounter].name;
+      this.valueSelect = this.inputValue;
       this.arrowCounter = -1;
       this.isShowOption = false;
+    },
+    validateCombobox(value) {
+      if (this.required == false) {
+        return;
+      }
+      if (this.optionAll === undefined) {
+        this.items = [...this.item];
+      }
+      if (!value) {
+        this.error = true;
+        this.errorMessage = "Trường này không được phép bỏ trống";
+      } else {
+        var obj = this.items.filter((item) => item.name == value);
+        if (obj.length == 0) {
+          this.error = true;
+          this.errorMessage = "Vui lòng chọn đúng các Option ở trên";
+        } else {
+          this.error = false;
+          this.errorMessage = "";
+        }
+      }
     },
   },
 };

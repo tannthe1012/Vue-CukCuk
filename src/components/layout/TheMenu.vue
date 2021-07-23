@@ -1,66 +1,96 @@
 <template>
-    <div class="navbar">
-        <div class="logo-site">
-            <div class="logo-box">
-                <div class="toggle-icon"></div>
-                <div class="amis-logo"></div>
-            </div>
-        </div>
-        <div class="navbar-content">
-            <a class="nav-item">
-                <div class="nav-item-icon icon-dashboard" >
-                </div>
-                <div class="nav-item-content">Tổng Quan</div>
-            </a>
-            <a class="nav-item">
-                <div class="nav-item-icon icon-report ">
-
-                </div>
-                <div class="nav-item-content">Báo Cáo</div>
-            </a>
-            <a class="nav-item" >
-                <div class="nav-item-icon icon-dashboard">
-
-                </div>
-                <div class="nav-item-content">Mua Hàng</div>
-            </a>
-            <a class="nav-item" href="employee.html" style="text-decoration: none;color: #000000; background-color: #019160;">
-                <div class="nav-item-icon icon-dic-employee" style="filter: brightness(0) invert(1);">
-
-                </div>
-                <div class="nav-item-content" style="color: #ffffff">Danh Mục Nhân Viên</div>
-            </a>
-            <a class="nav-item" href="customer.html" style="text-decoration: none;color: #000000;">
-                <div class="nav-item-icon icon-dic-employee" >
-
-                </div>
-                <div class="nav-item-content">Danh Mục Khách Hàng</div>
-            </a>
-            <a class="nav-item">
-                <div class="nav-item-icon icon-setting" >
-
-                </div>
-                <div class="nav-item-content">Thiết Lập Hệ Thống</div>
-            </a>
-
-        </div>
+  <div class="navbar">
+    <div class="logo-site">
+      <div class="logo-box">
+        <div class="toggle-icon"></div>
+        <div class="amis-logo"></div>
+      </div>
     </div>
+    <div class="navbar-content">
+      <router-link
+        class="nav-item"
+        v-for="(item, index) in menuList"
+        :key="index"
+        :to="item.route"
+        :class="{ 'menu-active': index == indexSelected }"
+        @click.native="updateMenu(index)"
+      >
+        <div class="nav-item-icon" :class="[item.icon,{'icon-menu-active': index == indexSelected}]" ></div>
+        <div class="nav-item-content" :class="{'content-active': index == indexSelected}">{{ item.text }}</div>
+      </router-link>
+    </div>
+  </div>
 </template>
+<script>
+export default {
+  name: "TheMenu",
+  data() {
+    return {
+      indexSelected: 4,
+
+      menuList: [
+        {
+          text: "Tổng quan",
+          icon: "icon-dashboard",
+          route: "/dashboard",
+        },
+        {
+          text: "Báo cáo",
+          icon: "icon-report",
+          route: "/report",
+        },
+        {
+          text: "Mua hàng",
+          icon: "icon-purchase",
+          route: "/purchase",
+        },
+        {
+          text: "Danh sách khách hàng",
+          icon: "icon-customer",
+          route: "/customer",
+        },
+        {
+          text: "Danh sách nhân viên",
+          icon: "icon-employee",
+          route: "/employee",
+        },
+        {
+          text: "Cài đặt",
+          icon: "icon-setting",
+          route: "/setting",
+        },
+      ],
+    };
+  },
+  methods: {
+    /**
+     * Hàm update lại menu được active
+     * Created By: NTTan (22/7/2021)
+     */
+    updateMenu(index) {
+      this.indexSelected = index;
+    },
+  },
+};
+</script>
 <style lang="css" scoped>
-    @import '../../css/common/navbar.css';
-    .icon-setting {
-        background-image: url('../../assets/icon/dashboard.png');
-    }
-    .icon-dashboard {
-        background-image: url('../../assets/icon/dashboard.png')
-    }
-    .icon-report {
-        background-image: url('../../assets/icon/report.png')
-    }
-    .icon-dic-employee {
-        background-image: url('../../assets/icon/dic-employee.png')
-    }
-    
-
-
+@import "../../css/common/navbar.css";
+.icon-setting {
+  background-image: url("../../assets/icon/dashboard.png");
+}
+.icon-dashboard {
+  background-image: url("../../assets/icon/dashboard.png");
+}
+.icon-report {
+  background-image: url("../../assets/icon/report.png");
+}
+.icon-employee {
+  background-image: url("../../assets/icon/dic-employee.png");
+}
+.icon-customer {
+  background-image: url("../../assets/icon/dic-employee.png");
+}
+.icon-purchase {
+  background-image: url("../../assets/icon/dashboard.png");
+}
 </style>

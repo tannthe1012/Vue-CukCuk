@@ -2,23 +2,18 @@
   <div id="app">
     <TheMenu />
     <TheHeader />
-    <TheContent />
-    <!-- <EmployeeDetail /> -->
+    <router-view></router-view>
   </div>
 </template>
 
 <script>
-// import EmployeeDetail from "./view/dictionary/employee/EmployeeDetail.vue"
 import TheMenu from "./components/layout/TheMenu.vue";
 import TheHeader from "./components/layout/TheHeader.vue";
-import TheContent from "./components/layout/TheContent.vue";
 export default {
   name: "App",
   components: {
     TheMenu,
     TheHeader,
-    TheContent,
-    // EmployeeDetail,
   },
 };
 </script>

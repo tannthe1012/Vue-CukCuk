@@ -1,6 +1,5 @@
 <template>
   <div id="modal" class="modal">
-    <!-- <p>{{showProps()}}</p> -->
     <div class="form-employee">
       <div class="close" id="btn-x-close" @click="showPopupCloseForm"></div>
       <div class="header-form">THÔNG TIN NHÂN VIÊN</div>
@@ -18,141 +17,74 @@
           <div class="form-user-top">
             <div class="content-form">A. THÔNG TIN CHUNG:</div>
             <div class="form-row">
-              <div class="form-input">
-                <label for="MaNV"
-                  >Mã nhân viên(<span style="color: brown">*</span>)</label
-                ><br />
-                <input
-                  type="text"
-                  name="MaNV"
-                  value=""
-                  id="txtEmployeeCode"
-                  class="input-required"
-                  fieldname="EmployeeCode"
-                  v-model="EmployeeDetail.EmployeeCode"
-                />
-              </div>
-              <div class="form-input">
-                <label for="name"
-                  >Họ và tên(<span style="color: brown">*</span>)</label
-                ><br />
-                <input
-                  type="text"
-                  value=""
-                  id="txtFullName"
-                  class="input-required"
-                  fieldname="FullName"
-                  v-model="EmployeeDetail.FullName"
-                />
-              </div>
+              <BaseInput
+                v-model="currentEmployee.EmployeeCode"
+                label="Mã nhân viên"
+                :required="true"
+                ref="input1"
+              />
+              <BaseInput
+                v-model="currentEmployee.FullName"
+                label="Họ và tên"
+                :required="true"
+                ref="input2"
+              />
             </div>
             <div class="form-row">
-              <div class="form-input">
-                <label for="dateofbirth"
-                  >Ngày sinh(<span style="color: brown">*</span>)</label
-                ><br />
-                <input
-                  type="date"
-                  name="dateofbirth"
-                  id="dtDateofBirth"
-                  value=""
-                  class="input-required"
-                  fieldname="DateOfBirth"
-                  v-model="EmployeeDetail.DateOfBirth"
-                />
-              </div>
+              <BaseInput
+                v-model="currentEmployee.DateOfBirth"
+                label="Ngày sinh"
+                :required="true"
+                type="date"
+                ref="input3"
+              />
               <div class="form-input">
                 <label for="gender"
                   >Giới tính(<span style="color: brown">*</span>)</label
                 ><br />
-                <div class="dropdown">
-                  <div class="dropdown-show">
-                    <span id="Gender" fieldname="GenderName"></span>
-                    <i class="fas fa-chevron-down dropdown-icon"></i>
-                  </div>
-                  <div class="dropdown-hide">
-                    <div class="dropdown-select">
-                      <i class="fas fa-check"></i>Nam
-                    </div>
-                    <div class="dropdown-select">
-                      <i class="fas fa-check"></i>Nữ
-                    </div>
-                    <div class="dropdown-select">
-                      <i class="fas fa-check"></i>Không xác định
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div class="form-row">
-              <div class="form-input">
-                <label for="personal-identity"
-                  >Số CMTND/Căn cước(<span style="color: brown">*</span>)</label
-                ><br />
-                <input
-                  type="text"
-                  name="personal-identity"
-                  value=""
-                  class="input-required"
-                  id="txtIdentityNumber"
-                  fieldname="IdentityNumber"
-                  v-model="EmployeeDetail.IdentityNumber"
-                />
-              </div>
-              <div class="form-input">
-                <label for="date-identity">Ngày cấp</label><br />
-                <input
-                  type="date"
-                  name="date-identity"
-                  id="IdentityDate"
-                  value=""
-                  fieldname="IdentityDate"
-                   v-model="EmployeeDetail.IdentityDate"
+
+                <BaseComboBox
+                  :required="true"
+                  v-bind:item="gender"
+                  v-bind:valueInput="formateGender(currentEmployee.Gender)"
+                  @result="(result) => fotmatDataCbb(result, 'gender')"
+                  ref="input4"
                 />
               </div>
             </div>
             <div class="form-row">
-              <div class="form-input">
-                <label for="address-identity">Nơi cấp</label><br />
-                <input
-                  type="text"
-                  name="address-identity"
-                  value=""
-                  id="IdentityPlace"
-                  fieldname="IdentityPlace"
-                  v-model="EmployeeDetail.IdentityPlace"
-                />
-              </div>
+              <BaseInput
+                v-model="currentEmployee.IdentityNumber"
+                label="Số CMTND/Căn cước"
+                :required="true"
+                ref="input5"
+              />
+              <BaseInput
+                v-model="currentEmployee.IdentityDate"
+                label="Số CMTND/Căn cước"
+                type="date"
+              />
             </div>
             <div class="form-row">
-              <div class="form-input">
-                <label for="email"
-                  >Email(<span style="color: brown">*</span>)</label
-                ><br />
-                <input
-                  type="email"
-                  name="email"
-                  value=""
-                  class="input-required"
-                  id="txtEmail"
-                  fieldname="Email"
-                  v-model="EmployeeDetail.Email"
-                />
-              </div>
-              <div class="form-input">
-                <label for="phonenumber"
-                  >Số điện thoại(<span style="color: brown">*</span>)</label
-                ><br />
-                <input
-                  type="text"
-                  name="phonenumber"
-                  value=""
-                  class="input-required"
-                  id="txtPhoneNumber"
-                  fieldname="PhoneNumber"
-                  v-model="EmployeeDetail.PhoneNumber"
-                />
-              </div>
+              <BaseInput
+                v-model="currentEmployee.IdentityPlace"
+                label="Nơi cấp"
+              />
+            </div>
+            <div class="form-row">
+              <BaseInput
+                v-model="currentEmployee.Email"
+                label="Email"
+                type="email"
+                :required="true"
+                ref="input6"
+              />
+              <BaseInput
+                v-model="currentEmployee.PhoneNumber"
+                label="Số điện thoại"
+                :required="true"
+                ref="input7"
+              />
             </div>
           </div>
           <div class="form-user-bottom">
@@ -160,81 +92,57 @@
             <div class="form-row">
               <div class="form-input">
                 <label for="position">Vị trí</label><br />
-                <BaseComboBox v-bind:item="position" v-bind:valueInput="EmployeeDetail.PositionName"/> 
+                <BaseComboBox
+                  v-bind:item="position"
+                  v-bind:valueInput="currentEmployee.PositionName"
+                  @result="(result) => fotmatDataCbb(result, 'position')"
+                />
               </div>
               <div class="form-input">
                 <label for="department">Phòng ban</label><br />
-                <BaseComboBox v-bind:item="department" v-bind:valueInput="EmployeeDetail.DepartmentName"/>
-              </div>
-            </div>
-            <div class="form-row">
-              <div class="form-input">
-                <label for="tax-code">Mã số thuế cá nhân</label><br />
-                <input
-                  type="text"
-                  name="tax-code"
-                  value=""
-                  id="txtPersonalTaxCode"
-                  fieldname="PersonalTaxCode"
-                  v-model="EmployeeDetail.PersonalTaxCode"
-                />
-              </div>
-              <div class="form-input" id="form-salary">
-                <div id="vnd" style="font-style: italic; opacity: 0.8">
-                  (VNĐ)
-                </div>
-                <label for="salary">Mức lương cơ bản</label><br />
-                <input
-                  type="text"
-                  id="salary"
-                  name="salary"
-                  value=""
-                  fieldname="Salary"
-                  v-model="EmployeeDetail.Salary"
+                <BaseComboBox
+                  v-bind:item="department"
+                  v-bind:valueInput="currentEmployee.DepartmentName"
+                  @result="(result) => fotmatDataCbb(result, 'department')"
                 />
               </div>
             </div>
+            <div class="form-row" id="form-salary">
+              <BaseInput
+                v-model="currentEmployee.PersonalTaxCode"
+                label="Mã số thuế cá nhân"
+              />
+              <BaseInput
+                v-model="currentEmployee.Salary"
+                label="Mức lương cơ bản"
+              />
+              <div id="vnd" style="font-style: italic; opacity: 0.8">(VNĐ)</div>
+            </div>
             <div class="form-row">
-              <div class="form-input">
-                <label for="date-attend-comppany">Ngày gia nhập công ty</label
-                ><br />
-                <input
-                  type="date"
-                  name="date-attend-comppany"
-                  id="JoinDate"
-                  value=""
-                  fieldname="JoinDate"
-                />
-              </div>
+              <BaseInput
+                v-model="currentEmployee.JoinDate"
+                label="Ngày gia nhập công ty"
+                type="date"
+              />
               <div class="form-input">
                 <label for="work-status">Tình trạng công việc</label><br />
-                <div class="dropdown">
-                  <div class="dropdown-show">
-                    <span id="WorkStatus" fieldname="WorkStatus"></span>
-                    <i class="fas fa-chevron-down dropdown-icon"></i>
-                  </div>
-                  <div class="dropdown-hide">
-                    <div class="dropdown-select">
-                      <i class="fas fa-check"></i>Đang làm việc
-                    </div>
-                    <div class="dropdown-select">
-                      <i class="fas fa-check"></i>Đang thử việc
-                    </div>
-                    <div class="dropdown-select">
-                      <i class="fas fa-check"></i>Đã Nghỉ việc
-                    </div>
-                    <div class="dropdown-select">
-                      <i class="fas fa-check"></i>Khác ...
-                    </div>
-                  </div>
-                </div>
+                <BaseComboBox
+                  v-bind:item="statuswork"
+                  @result="(result) => fotmatDataCbb(result, 'workstatus')"
+                />
               </div>
             </div>
           </div>
         </div>
       </div>
       <div class="form-button">
-        <div class="btn-close" id="employee-btn-close" @click="showPopupCloseForm">Hủy</div>
+        <div
+          class="btn-close"
+          id="employee-btn-close"
+          @click="showPopupCloseForm"
+        >
+          Hủy
+        </div>
         <button
           class="m-btn m-btn-default"
           id="btn-save"
@@ -249,24 +157,48 @@
 </template>
 
 <script>
-import BaseComboBox from '../../../components/base/BaseComboBox.vue'
+import moment from "moment";
+import BaseComboBox from "../../../components/base/BaseComboBox.vue";
+import BaseInput from "../../../components/base/BaseInput.vue";
+import {toast} from "../../../mixins/mixin.js"
 export default {
   name: "EmployeeDetail",
+  mixins: [toast],
   components: {
     BaseComboBox,
+    BaseInput,
+  },
+  data() {
+    return {
+      gender: [
+        { id: 0, name: "Nữ" },
+        { id: 1, name: "Nam" },
+        { id: 2, name: "Không Xác Định" },
+      ],
+      statuswork: [
+        { id: 0, name: "Đang làm việc" },
+        { id: 1, name: "Đang thử việc" },
+        { id: 2, name: "Đã nghỉ việc" },
+        { id: 3, name: "Không Xác Định" },
+      ],
+    };
   },
   props: {
     EmployeeDetail: { type: Object },
-    department: {type: Array},
-    position: {type: Array},
-    gender: [
-      {id: 0, name : "Nữ"},
-      {id: 1, name : "Nam"},
-      {id: 2, name : "Không Xác Định"},
-      {id: 3, name : "Không Xác Định"},
-      {id: 4, name : "Không Xác Định"},
-    ]
+    department: { type: Array },
+    position: { type: Array },
   },
+  computed: {
+    currentEmployee: function () {
+      return {
+        ...this.EmployeeDetail,
+        DateOfBirth: this.formatDateToInput(this.EmployeeDetail?.DateOfBirth),
+        JoinDate: this.formatDateToInput(this.EmployeeDetail?.JoinDate),
+        IdentityDate: this.formatDateToInput(this.EmployeeDetail?.IdentityDate),
+      };
+    },
+  },
+
   methods: {
     /**
      * Hàm xử lí đóng form Gửi lên EmployeeDetail
@@ -280,10 +212,76 @@ export default {
      * Created By: NTTan(16/7/2021)
      */
     btnSaveOnClick() {
-      this.$emit("saveOnClick", this.EmployeeDetail);
+      let errors = [];
+      Object.entries(this.$refs).forEach((baseinput) => {
+        baseinput[1].$refs.refinput.focus();
+        baseinput[1].$refs.refinput.blur();
+        if (baseinput[1].error) {
+          errors.push(baseinput[1]);
+        }
+      });
+      if (errors.length == 0) {
+        this.$emit("saveOnClick", this.currentEmployee);
+      } else {
+        errors[0].$refs.refinput.focus();
+      }
+    },
+    
+    /**
+     * Hàm format date vào các tr tương ứng
+     * Created By: NTTan (15/7/2021)
+     */
+    formatDateToInput(value) {
+      if (value) {
+        return moment(String(value)).format("YYYY-MM-DD");
+      }
+    },
+    formateGender(number) {
+      if (number == null) {
+        return "";
+      } else if (number == 1) {
+        return "Nam";
+      } else if (number == 0) {
+        return "Nữ";
+      } else {
+        return "Không Xác Định";
+      }
+    },
+    updateDate(value) {
+      this.dateOfBirth = value;
+    },
+    fotmatDataCbb(result, type) {
+      switch (type) {
+        case "gender":
+          this.currentEmployee.GenderName = result;
+          this.currentEmployee.Gender = this.findId(result, this.gender);
+          break;
+        case "position":
+          this.currentEmployee.PositionName = result;
+          this.currentEmployee.PositionId = this.findId(result, this.position);
+          break;
+        case "department":
+          this.currentEmployee.DepartmentName = result;
+          this.currentEmployee.DepartmentId = this.findId(
+            result,
+            this.department
+          );
+          break;
+        case "workstatus":
+          this.currentEmployee.WorkStatus = this.findId(
+            result,
+            this.statuswork
+          );
+          break;
+        default:
+          break;
+      }
+    },
+    findId(result, array) {
+      const obj = array.find((item) => item.name == result);
+      return obj.id;
     },
   },
-  
 };
 </script>
 
