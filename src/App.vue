@@ -1,8 +1,10 @@
 <template>
   <div id="app">
-    <TheMenu />
-    <TheHeader />
-    <router-view></router-view>
+    <TheHeader @menuMini="menuMini"/>
+    <div id="main">
+      <TheMenu :class="{'minimenu':mini}" v-bind:mini="mini"/>
+      <router-view :mini="mini"></router-view>
+    </div>
   </div>
 </template>
 
@@ -15,6 +17,16 @@ export default {
     TheMenu,
     TheHeader,
   },
+  data() {
+    return {
+      mini: false,
+    }
+  },
+  methods: {
+    menuMini() {
+      this.mini = !this.mini;
+    }
+  }
 };
 </script>
 
@@ -23,6 +35,9 @@ export default {
 @import "./css/page/employee.css";
 #id {
   position: relative;
+}
+#main {
+  display: flex;
 }
 </style>
 

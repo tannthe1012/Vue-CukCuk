@@ -4,7 +4,7 @@
         <i :class="toast.icontoast"></i>
       </div>
       <div class="toast-text">{{toast.message}}</div>
-      <div class="toast-icon toast-close">
+      <div class="toast-icon toast-close" @click="removeArrayToast">
         <i class="fas fa-times"></i>
       </div>
     </div>
@@ -23,7 +23,8 @@ export default {
     methods: {
       removeArrayToast() {
         this.$store.state.Toast = this.$store.state.Toast.filter((item) => item.id != this.toast.id);
-      }
+      },
+
     }
 }
 </script>

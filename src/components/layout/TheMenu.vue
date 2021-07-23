@@ -1,11 +1,5 @@
 <template>
   <div class="navbar">
-    <div class="logo-site">
-      <div class="logo-box">
-        <div class="toggle-icon"></div>
-        <div class="amis-logo"></div>
-      </div>
-    </div>
     <div class="navbar-content">
       <router-link
         class="nav-item"
@@ -16,7 +10,7 @@
         @click.native="updateMenu(index)"
       >
         <div class="nav-item-icon" :class="[item.icon,{'icon-menu-active': index == indexSelected}]" ></div>
-        <div class="nav-item-content" :class="{'content-active': index == indexSelected}">{{ item.text }}</div>
+        <div class="nav-item-content" :class="[{'content-active': index == indexSelected}]">{{ item.text }}</div>
       </router-link>
     </div>
   </div>
@@ -27,7 +21,8 @@ export default {
   data() {
     return {
       indexSelected: 4,
-
+      val: true,
+      minimenu: Boolean,
       menuList: [
         {
           text: "Tổng quan",
@@ -61,6 +56,14 @@ export default {
         },
       ],
     };
+  },
+  watch: {
+    minimenu: function() {
+      this.minimenu = this.mini;
+    }
+  },
+  props: {
+    mini: Boolean,
   },
   methods: {
     /**

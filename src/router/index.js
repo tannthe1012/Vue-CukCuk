@@ -1,7 +1,7 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
 
-import TheContent from '../components/layout/TheContent.vue'
+import EmployeePage from '../view/dictionary/employee/EmployeePage.vue'
 // import CustomerPage from '../views/dictionary/customer/CustomerPage.vue'
 // import DashboardPage from '../views/DashboardPage.vue'
 // import ReportPage from '../views/ReportPage.vue'
@@ -12,14 +12,14 @@ import TheContent from '../components/layout/TheContent.vue'
 Vue.use(VueRouter);
 
 const routes = [
-  {path:"/", component: TheContent},
+  {path:"/", component: EmployeePage},
 
-  {path:"/employee", component: TheContent},
-  {path:"/customer", component: TheContent},
-  {path:"/dashboard", component: TheContent},
-  {path:"/report", component: TheContent},
-  {path:"/purchase", component: TheContent},
-  {path:"/setting", component: TheContent},
+  {path:"/employee", component: EmployeePage},
+  {path:"/customer", component: EmployeePage},
+  {path:"/dashboard", component: EmployeePage},
+  {path:"/report", component: EmployeePage},
+  {path:"/purchase", component: EmployeePage},
+  {path:"/setting", component: EmployeePage},
 ];
 
 export const router = new VueRouter({

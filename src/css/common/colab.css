@@ -7,16 +7,19 @@
   .page-navigations a {
     color: black;
     float: left;
-    padding: 8px 16px;
     text-decoration: none;
-    border: none;
+    border: 1px solid #E9EBEE;
     border-radius: 50%;
-    font-size: 22px;
-    
+    font-size: 18px;
+    width: 40px;
+    height: 40px;
+    line-height: 40px;
+    text-align: center;
+    margin-right: 6px;
   }
   
   .page-navigations a.active {
-    background-color: #01B075;
+    background-color: #01B075 !important;
     color: white;
   }
   .paging-bar .paging-contentleft, .paging-bar .paging-contentright {
@@ -36,7 +39,11 @@ li {
 }
 a+a {
     margin-top: 5px;
+    
 }
+/* li+li {
+  margin-left: 10px;
+} */
 .page-navigations ul li a:hover {
   background-color: #E5E5E5;
 }

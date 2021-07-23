@@ -9,7 +9,10 @@
     <input
       :type="type"
       :title="errorMessage"
-      :class="{ 'error-input': error == true }"
+      :class="[
+        { 'error-input': error == true },
+        { 'input-salary': label == textSalary },
+      ]"
       :value="valueInput"
       @blur="validate(valueInput)"
       @input="updateValue($event.target.value)"
@@ -21,6 +24,7 @@
 export default {
   data() {
     return {
+      textSalary: "Mức lương cơ bản",
       error: false,
       errorMessage: "",
       valueInput: this.value,
@@ -43,7 +47,16 @@ export default {
   },
   methods: {
     updateValue(value) {
+      if (this.label === "Mức lương cơ bản") {
+        value = value.replaceAll(".", "");
+        value = value.replaceAll(",", "");
+        value = Number(value).toLocaleString("it-IT");
+      }
       this.valueInput = value;
+       if (this.label === "Mức lương cơ bản") {
+        value = value.replaceAll(".", "");
+        value = value.replaceAll(",", "");
+      }
       this.$emit("input", value);
     },
     validate(value) {
@@ -72,4 +85,9 @@ export default {
 </script>
 <style scoped>
 @import "../../css/common/form.css";
+.input-salary {
+  text-align: right;
+  padding-right: 55px;
+  padding-left: 0px;
+}
 </style>

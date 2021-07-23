@@ -115,6 +115,7 @@
               <BaseInput
                 v-model="currentEmployee.Salary"
                 label="Mức lương cơ bản"
+
               />
               <div id="vnd" style="font-style: italic; opacity: 0.8">(VNĐ)</div>
             </div>
@@ -195,6 +196,7 @@ export default {
         DateOfBirth: this.formatDateToInput(this.EmployeeDetail?.DateOfBirth),
         JoinDate: this.formatDateToInput(this.EmployeeDetail?.JoinDate),
         IdentityDate: this.formatDateToInput(this.EmployeeDetail?.IdentityDate),
+        Salary: this.formatMoney(this.EmployeeDetail.Salary),
       };
     },
   },
@@ -221,9 +223,11 @@ export default {
         }
       });
       if (errors.length == 0) {
+        this.formatMoneySalary();
         this.$emit("saveOnClick", this.currentEmployee);
       } else {
         errors[0].$refs.refinput.focus();
+        this.addToast("error", "Bạn chưa nhập hết các trường dữ liệu");
       }
     },
     
@@ -281,6 +285,15 @@ export default {
       const obj = array.find((item) => item.name == result);
       return obj.id;
     },
+    formatMoney(money) {
+      if (money == null) return "0";
+      else return money.toLocaleString("it-IT");
+    },
+    formatMoneySalary() {
+      this.currentEmployee.Salary = this.currentEmployee.Salary.replaceAll(".", "");
+      this.currentEmployee.Salary = this.currentEmployee.Salary.replaceAll(",", "");
+      this.currentEmployee.Salary = Number(this.currentEmployee.Salary)
+    }
   },
 };
 </script>

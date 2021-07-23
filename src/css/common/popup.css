@@ -117,4 +117,9 @@ body {
 .popup-btn-confirm:hover {
     opacity: 0.7;
 }
-
+.popup-confirm-close {
+    background-color: #019160 !important;
+}
+.close-confirm-close i{
+    color: #e7d530;
+}
